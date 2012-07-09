@@ -146,8 +146,12 @@ if (process.argv[2] !== 'child') {
 
   var sendSocket = dgram.createSocket('udp4');
 
+  // bind the address explicitly for sending
+  // INADDR_BROADCAST to only one interface
   sendSocket.bind(common.PORT);
-  sendSocket.setBroadcast(true);
+  sendSocket.on('listening', function () {
+    sendSocket.setBroadcast(true);
+  });
 
   sendSocket.on('close', function() {
     console.error('[PARENT] sendSocket closed');
